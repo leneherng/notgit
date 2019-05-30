@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import notgit.Tree.TreeNode;
 
 public class NotGit {
@@ -114,6 +112,7 @@ public class NotGit {
         System.out.println();
     }
 
+    // add a file to be tracked
     public static void add(String fileName) {
         if (tree.directory == null) { //no directory = no repository
             System.out.println("Repository is not initialised.\n");
@@ -129,14 +128,16 @@ public class NotGit {
         }
     }
 
+    // list out all branches
     public static void branch() {
-        if (tree.isEmpty()) {
+        if (tree.isEmpty()) {  
             System.out.println("No branch available.\n");
         } else {
             tree.branchList();
         }
     }
 
+    // create new branch
     public static void branch(String branchName) {
         if (tree.isEmpty()) {
             System.out.println("Nothing to branch from.\n");
@@ -150,6 +151,7 @@ public class NotGit {
         }
     }
 
+    // checks out the other branch
     public static void checkout(String branchName) {
         boolean unsavedChanges = false;
         if (!tree.branchList.contains(branchName)) {
@@ -164,7 +166,7 @@ public class NotGit {
                         st += sc.nextLine() + System.lineSeparator();
                     }
                     if (!st.equals(tree.leaf.getBlob(s))) { // if current file does not equal to file committed
-                        unsavedChanges = true;
+                        unsavedChanges = true;  // then there are unsaved changes
                         break;
                     }
                 }
@@ -176,7 +178,7 @@ public class NotGit {
                         st += sc.nextLine() + System.lineSeparator();
                     }
                     if (!st.equals(tree.leaf.getBlob(s))) { // if current file equals to file committed
-                        unsavedChanges = true;
+                        unsavedChanges = true;  // then there are unsaved changes
                         break;
                     }
                 }
@@ -188,12 +190,12 @@ public class NotGit {
                         st += sc.nextLine() + System.lineSeparator();
                     }
                     if (!st.equals(tree.leaf.getBlob(s))) { // if current file equals to file committed
-                        unsavedChanges = true;
+                        unsavedChanges = true;  // then there are unsaved changes
                         break;
                     }
                 }
-                if (unsavedChanges == false) {
-                    tree.checkout(branchName);
+                if (unsavedChanges == false) {  //if there are no unsaved changes
+                    tree.checkout(branchName);  
                     System.out.println("checkout to branch \"" + branchName + "\"\n");
                     for (int j = 0; j < tree.newList.size(); j++) {
                         try {
@@ -225,7 +227,7 @@ public class NotGit {
                             System.out.println("Problem with file output.");
                         }
                     }
-                } else {
+                } else {    // if there are unsaved changes
                     System.out.println("There are modified files! Please commit or remove the changes before switching to another branch.\n");
                 }
             } catch (IOException ex) {
@@ -365,6 +367,7 @@ public class NotGit {
                     Scanner sc = new Scanner(System.in);
                     String description = sc.nextLine();
                     tree.addTreeNode(description);
+                    tree.treelog();
                     tree.leaf.blobs = (HashMap) current.blobs.clone();
                     //print the files out 
                     for (int j = 0; j < tree.newList.size(); j++) {
@@ -404,6 +407,7 @@ public class NotGit {
                 }
                 if (current == tree.root && commitID <= tree.commitID) {
                     System.out.println("This commit is not from this branch.\n");
+                    break;
                 } else {
                     current = current.trunk;
                 }
@@ -544,21 +548,20 @@ public class NotGit {
         }
     }
 
+    //displays a tree of commits
     public static void tree() {
         tree.tree();
     }
 
+    //ends the program
     public static void end() {
         notgit = false;
         ObjectOutputStream out;
-        String s = tree.directory + "\\tree.dat";
         try {
-            out = new ObjectOutputStream(new FileOutputStream(s));
+            out = new ObjectOutputStream(new FileOutputStream("tree.dat"));
             out.writeObject(tree);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(NotGit.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(NotGit.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -180,15 +180,10 @@ public class Tree<E> implements Serializable {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
             return sdf.format(date);
         }
-
-        @Override
-        public String toString() {
-            String s = getCommitID() + System.lineSeparator();
-            s += getDescription() + System.lineSeparator();
-//            s += getDate() + System.lineSeparator();
-//            s += getTrunk() + System.lineSeparator();
-//            s += getBlobs();
-            return s;
-        }
+    }
+    public static void main(String[] args) {
+        TreeNode tree = new TreeNode();
+        tree.addBlob("file.txt", "test");
+        System.out.println(tree.blobs.get("file.txt"));
     }
 }
